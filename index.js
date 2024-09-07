@@ -125,11 +125,7 @@ const generateMessage = function (formConfig, payload) {
             .text('Form Results:')
 
         Object.entries(getFilteredAnswers(payload, filters)).forEach(([k, v]) => {
-            slack_message = slack_message.fields({
-                title: k,
-                value: v,
-                short: false
-            })
+            slack_message = slack_message.field().title(k).value(v).short(false).end()
         })
 
         slack_message = slack_message

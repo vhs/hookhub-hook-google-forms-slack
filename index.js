@@ -1,4 +1,4 @@
-const debug = require('debug')('vhs-hookhub-google-forms-slack')
+const debug = require('debug')('hookhub:hooks:google-forms-slack')
 debug('Loading vhs-hookhub-google-forms-slack')
 debug(__dirname)
 
@@ -11,7 +11,7 @@ const { createHmac } = require('node:crypto')
 const isValid = (val) => val != null && typeof val === 'string' && val !== ''
 
 // Perform sanity check
-router.use(function (req, res, next) {
+router.use((req, res, next) => {
     const formId = req.header('X-Hookhub-Google-Form-Id')
     const formHash = req.header('X-Hookhub-Google-Form-Hash')
     const formTS = req.header('X-Hookhub-Google-Form-TS')
@@ -30,7 +30,7 @@ router.use(function (req, res, next) {
     }
 })
 
-router.use(function (req, res, next) {
+router.use((req, res, next) => {
     if (config.forms[res.locals.formId] == null) {
         res.status(401).send({
             result: 'ERROR',
@@ -43,7 +43,7 @@ router.use(function (req, res, next) {
     }
 })
 
-router.use(function (req, res, next) {
+router.use((req, res, next) => {
     const verifyKey = `${res.locals.formId}.${res.locals.formTS}.${res.locals.formConfig.secret}`
 
     const verifyHash = createHmac('sha256', verifyKey).update(req.rawBody).digest('hex')
@@ -64,7 +64,7 @@ router.use(function (req, res, next) {
 })
 
 /* Default handler. */
-router.use('/', async function (req, res, next) {
+router.use('/', async (req, res, next) => {
     debug('Handling default request')
 
     let post_body = generateMessage(res.locals.formConfig, req.body)
@@ -77,11 +77,11 @@ router.use('/', async function (req, res, next) {
     }
 
     try {
-        const data = await (await fetch(config.slack.url, post_options)).json()
+        await fetch(config.slack.url, post_options)
 
         res.send({
             result: 'OK',
-            message: data
+            message: 'Message posted!'
         })
     } catch (err) {
         res.status(500).send({
@@ -119,9 +119,9 @@ const generateMessage = function (formConfig, payload) {
             )
             .color('#0000cc')
             .authorName(formConfig.slack.title)
-            .authorLink(`https://docs.google.com/forms/d/${formConfig.id}/view`)
+            .authorLink(`https://docs.google.com/forms/d/${formConfig.id}/viewform`)
             .title(formConfig.slack.title)
-            .titleLink(`https://docs.google.com/forms/d/${formConfig.id}/view`)
+            .titleLink(`https://docs.google.com/forms/d/${formConfig.id}/viewform`)
             .text('Form Results:')
 
         Object.entries(getFilteredAnswers(payload, filters)).forEach(([k, v]) => {

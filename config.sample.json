@@ -1,0 +1,24 @@
+{
+    "forms": {
+        "GOOGLEFORMID": {
+            "secret": "SOMESECRET",
+            "slack": {
+                "title": "Descriptive title",
+                "options": {
+                    "username": "ExampleBot",
+                    "channel": "#some-other-channel"
+                },
+                "answers": true,
+                "filter": ["What is your name?"]
+            }
+        }
+    },
+    "slack": {
+        "url": "https://hooks.slack.com/services/PRIVATE/WEBHOOK/URL",
+        "options": {
+            "username": "HookHub",
+            "icon_emoji": ":robot_face:",
+            "channel": "#bot-testing"
+        }
+    }
+}

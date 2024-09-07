@@ -44,7 +44,7 @@ router.use(function (req, res, next) {
 })
 
 router.use(function (req, res, next) {
-    const verifyKey = `${res.locals.formID}.${res.locals.formTS}.${res.locals.formConfig.secret}`
+    const verifyKey = `${res.locals.formId}.${res.locals.formTS}.${res.locals.formConfig.secret}`
 
     const verifyHash = createHmac('sha256', verifyKey).update(req.rawBody).digest('hex')
 

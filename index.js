@@ -12,9 +12,9 @@ const isValid = (val) => val != null && typeof val === 'string' && val !== ''
 
 // Perform sanity check
 router.use(function (req, res, next) {
-    const formId = req.header('X-Google-Form-Id')
-    const formHash = req.header('X-Google-Form-Hash')
-    const formTS = req.header('X-Google-Form-TS')
+    const formId = req.header('X-Hookhub-Google-Form-Id')
+    const formHash = req.header('X-Hookhub-Google-Form-Hash')
+    const formTS = req.header('X-Hookhub-Google-Form-TS')
 
     if (!isValid(formId) || !isValid(formTS) || Number.isNaN(formTS) || !isValid(formHash) || !isValid(req.rawBody)) {
         res.status(412).send({

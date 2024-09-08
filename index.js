@@ -16,15 +16,21 @@ router.use((req, res, next) => {
     const formHash = req.header('X-Hookhub-Google-Form-Hash')
     const formTS = req.header('X-Hookhub-Google-Form-TS')
 
-    if (!isValid(formId) || !isValid(formTS) || Number.isNaN(formTS) || !isValid(formHash) || !isValid(req.rawBody)) {
+    if (
+        !isValid(formId) ||
+        !isValid(formTS) ||
+        Number.isNaN(encodeURI(formTS)) ||
+        !isValid(formHash) ||
+        !isValid(req.rawBody)
+    ) {
         res.status(412).send({
             result: 'ERROR',
             message: 'Missing or invalid request arguments'
         })
     } else {
-        res.locals.formId = formId
-        res.locals.formHash = formHash
-        res.locals.formTS = Number(formTS)
+        res.locals.formId = encodeURI(formId)
+        res.locals.formHash = encodeURI(formHash)
+        res.locals.formTS = Number(encodeURI(formTS))
 
         next()
     }
